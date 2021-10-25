@@ -2,7 +2,6 @@ package jpabook.jpashop.domain;
 
 import lombok.Getter;
 import lombok.Setter;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -59,5 +58,39 @@ public class Order {
     public void setDelivery(Delivery delivery){
         this.delivery = delivery;
         delivery.setOrder(this);
+    }
+
+    // 별도의 생성 메서드... 여러 엔티티와 얽힌 복잡한 객체를 생성하는 메서드는 public static 으로 따로 만들어주면 조타.
+    public static Order createOrder(Member member, Delivery delivery, OrderItem... orderItems){
+        Order order = new Order();
+        order.setMember(member);
+        order.setDelivery(delivery);
+        for (OrderItem orderItem: orderItems){
+            order.addOrderItem(orderItem);
+        }
+        order.setStatus(OrderStatus.ORDER);
+        order.setOrderDate(LocalDateTime.now());
+
+        return order;
+    }
+
+    // 비지니스 로지꾸
+    public void cancel(){
+        if (delivery.getStatus() == DeliveryStatus.COMP){
+            throw new IllegalStateException("방금 출발했어요");
+        }
+        this.setStatus(OrderStatus.CANCEL);
+        for (OrderItem orderItem: orderItems){
+            orderItem.cancel();
+        }
+    }
+
+    public int getTotalPrice(){
+        int total = 0;
+        for(OrderItem orderItem: orderItems){
+            total += orderItem.getTotalPrice();
+        }
+
+        return total;
     }
 }
