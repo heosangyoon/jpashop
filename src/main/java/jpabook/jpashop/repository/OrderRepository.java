@@ -63,7 +63,7 @@ public class OrderRepository {
         return query.getResultList();
     }
 
-    public List<Order> findAllByCriteria(OrderSearch orderSearch){
+    public List<Order> findAll(OrderSearch orderSearch){
         // 이것도 권장하는 방법은 아닙니다.?! 너무넘눈ㅁ눔넘눰눤문 복잡해서 실무에서 안써요 !
         // 그럼 여러개 검색 기능은 어떻게 구현해요 ...?
         // 나중에 Querydsl 소개시켜준대요~!

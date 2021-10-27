@@ -1,15 +1,15 @@
 package jpabook.jpashop.controller;
 
+import jpabook.jpashop.domain.item.Book;
 import jpabook.jpashop.domain.item.Item;
 import jpabook.jpashop.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -27,20 +27,55 @@ public class ItemController {
 
     @GetMapping("items/new")
     public String createForm(Model model){
-        model.addAttribute("itemForm", new ItemForm());
+        model.addAttribute("form", new BookForm());
         return "items/createItemForm";
     }
 
     @PostMapping("items/new")
-    public String create(@Valid ItemForm form, BindingResult result){
-        if (result.hasErrors()){
-            return "items/createItemForm";
-        }
-//        Item item = new ??();
+    public String create(BookForm form){
 
+        Book book = new Book();
+        book.setName(form.getName());
+        book.setPrice(form.getPrice());
+        book.setStockQuantity(form.getStockQuantity());
+        book.setAuthor(form.getAuthor());
+        book.setIsbn(form.getIsbn());
 
-//        itemService.saveItem(item);
-        return "redirect:/";
+        itemService.saveItem(book);
+        return "redirect:/items";
+    }
+
+    //@PathVariable 로 url 에 있는 변수를 매핑해서 받아온다
+    @GetMapping("items/{itemId}/edit")
+    public String updateItemForm(@PathVariable("itemId") Long itemId, Model model){
+        Book item = (Book) itemService.findOne(itemId);
+
+        BookForm form = new BookForm();
+        form.setId(item.getId());
+        form.setName(item.getName());
+        form.setPrice(item.getPrice());
+        form.setStockQuantity(item.getStockQuantity());
+        form.setAuthor(item.getAuthor());
+        form.setIsbn(item.getIsbn());
+
+        model.addAttribute("form", form);
+
+        return "items/updateItemForm";
+    }
+
+    @PostMapping("items/{itemId}/edit")
+    public String updateItem(@ModelAttribute("form") BookForm form){
+//        요렇게 setter로 쭉 풀어놓는 것은 좋은 코드가 아니다 ~~~ 프로젝트 규모 커지고 복잡해지면 나중에 추적이 어렵다!
+//        Book book = new Book();
+//        book.setId(form.getId());
+//        book.setName(form.getName());
+//        book.setPrice(form.getPrice());
+//        book.setStockQuantity(form.getStockQuantity());
+//        book.setAuthor(form.getAuthor());
+//        book.setIsbn(form.getIsbn());
+        itemService.updateItem(form.getId(), form.getName(), form.getPrice());
+
+        return "redirect:/items";
     }
 
 }
