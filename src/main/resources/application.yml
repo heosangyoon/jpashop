@@ -4,20 +4,17 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
-  devtools:
-    livereload:
-      enabled: true
-    freemarker:
-      cache: false
-    thymeleaf:
-      cache: false
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     properties:
       hibernate:
-#        show-sql: true
-        format-sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+        #        show_sql: true
+        format_sql: true
+        default_batch_fetch_size: 1000 #최적화 옵션
+
 logging.level:
   org.hibernate.SQL: debug
+#  org.hibernate.type: trace111
