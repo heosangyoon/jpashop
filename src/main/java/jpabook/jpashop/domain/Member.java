@@ -1,5 +1,6 @@
 package jpabook.jpashop.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,6 +25,7 @@ public class Member {
     @Embedded // @Embeddable 필요
     private Address address;
 
+    @JsonIgnore // 양방향 연관관계가 있을 땐 한 쪽에 JsonIgnore 를 달아주어야 함.
     @OneToMany(mappedBy = "member") // 나는 연관관계의 주인이 아니예용 ! 읽기전용! 여기 무슨 값을 넣어도 안바뀐다!
     private List<Order> orders = new ArrayList<>();
 }

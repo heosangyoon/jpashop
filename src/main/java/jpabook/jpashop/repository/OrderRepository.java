@@ -1,5 +1,6 @@
 package jpabook.jpashop.repository;
 
+import jpabook.jpashop.api.OrderSimpleApiController;
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderSearch;
@@ -91,4 +92,25 @@ public class OrderRepository {
     }
 
 
+    // Order 를 가져올때 Member, Delivery 까지 한 방에 가져와버리는 쿼리
+    // order member delivery 를 쿼리 한 번으로 쪼인한다음에 싹 다 끌고 오는거
+    // LAZY 무시하고 끌고 옴.
+    public List<Order> findAllWithMemberDelivery() {
+        return em.createQuery(
+                "select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d", Order.class
+        ).getResultList();
+    }
+
+    public List<OrderSimpleQueryDto> findOrderDtos() {
+        return em.createQuery(
+                "select new jpabook.jpashop.repository.OrderSimpleQueryDto(o.id, m.name, o.orderDate, o.status, d.address)" +
+                        "from Order o" +
+                        " join o.member m" +
+                        " join o.delivery d", OrderSimpleQueryDto.class)
+                .getResultList();
+
+
+    }
 }

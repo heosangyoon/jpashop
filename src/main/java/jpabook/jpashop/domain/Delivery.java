@@ -1,5 +1,6 @@
 package jpabook.jpashop.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,7 @@ public class Delivery {
     private Long id;
 
     // Delivery 와 Order 는 1:1 관계지만 Order 에 외래키가 가까우므로 주인. 주인이 아닌넘한텐 이렇게 mappedBy 가 붙는다.
+    @JsonIgnore
     @OneToOne(mappedBy = "delivery", fetch = FetchType.LAZY)
     private Order order;
 
